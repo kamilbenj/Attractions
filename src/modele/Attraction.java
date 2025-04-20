@@ -18,6 +18,7 @@ public class Attraction {
     private Date dateModification;
 
     // Constructeurs
+    // Constructeurs
     public Attraction() {
         this.dateCreation = new Date();
         this.dateModification = new Date();
