@@ -13,3 +13,4 @@ public class ExceptionDAO extends Exception {
         super(message, cause);
     }
 }
+
