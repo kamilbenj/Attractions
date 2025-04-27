@@ -87,46 +87,8 @@ public class UtilisateurDAO {
         return liste;
     }
 
-    public boolean deleteUtilisateur(int id) {
-        String sql = "DELETE FROM Utilisateur WHERE id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    public boolean updateUtilisateur(Utilisateur u) {
-        String sql = "UPDATE Utilisateur SET nom=?, email=?, mot_de_passe=?, type=?, age=?, date_inscription=? WHERE id=?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, u.getNom());
-            ps.setString(2, u.getEmail());
-            ps.setString(3, u.getMotDePasse());
-            ps.setString(4, u.getType().name());
-            ps.setInt(5, u.getAge());
-            ps.setDate(6, Date.valueOf(u.getDateInscription()));
-            ps.setInt(7, u.getId());
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    // Méthode de mapping
     private Utilisateur mapUtilisateur(ResultSet rs) throws SQLException {
         return new Utilisateur(
                 rs.getInt("id"),

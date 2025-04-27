@@ -20,16 +20,13 @@ public class ClientController {
         this.utilisateurDAO = new UtilisateurDAO();
     }
 
-    /**
-     * Retourne l’historique des réservations du client.
-     */
+    // Retourne l’historique des réservations du client.
+
     public List<Reservation> getReservationsClient(int idClient) {
         return reservationDAO.getReservationsByUtilisateur(idClient);
     }
 
-    /**
-     * Retourne toutes les factures liées aux réservations du client.
-     */
+    //Retourne toutes les factures liées aux réservations du client.
     public List<Facture> getFacturesClient(int idClient) {
         List<Reservation> reservations = reservationDAO.getReservationsByUtilisateur(idClient);
         List<Facture> facturesClient = new java.util.ArrayList<>();
@@ -39,12 +36,5 @@ public class ClientController {
         }
 
         return facturesClient;
-    }
-
-    /**
-     * Permet à un client de supprimer son compte.
-     */
-    public boolean supprimerCompte(int idClient) {
-        return utilisateurDAO.deleteUtilisateur(idClient);
     }
 }

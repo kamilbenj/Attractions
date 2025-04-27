@@ -31,9 +31,7 @@ public class ReservationController {
         this.reductionDAO = new ReductionDAO();
     }
 
-    /**
-     * Crée une nouvelle réservation avec date et heure.
-     */
+    //Crée une nouvelle réservation avec date et heure.
     public boolean reserverAttraction(int idUtilisateur, int idAttraction, LocalDate date, LocalTime heure, int nbBillets) {
         if (nbBillets <= 0 || date.isBefore(LocalDate.now())) {
             return false;
@@ -94,16 +92,12 @@ public class ReservationController {
         return false;
     }
 
-    /**
-     * Historique des réservations du client
-     */
+    //Historique des réservations du client
     public List<Reservation> getHistoriqueUtilisateur(int idUtilisateur) {
         return reservationDAO.getReservationsByUtilisateur(idUtilisateur);
     }
 
-    /**
-     * Liste de toutes les réservations (admin)
-     */
+    //Liste de toutes les réservations (admin)
     public List<Reservation> getToutesReservations() {
         return reservationDAO.getAllReservations();
     }

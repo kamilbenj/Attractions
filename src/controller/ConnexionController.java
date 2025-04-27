@@ -12,9 +12,7 @@ public class ConnexionController {
         this.utilisateurDAO = new UtilisateurDAO();
     }
 
-    /**
-     * Vérifie les identifiants et retourne l'utilisateur connecté s'ils sont valides.
-     */
+    //Vérifie les identifiants et retourne l'utilisateur connecté s'ils sont valides.
     public Utilisateur connecter(String email, String motDePasse) {
         Utilisateur utilisateur = utilisateurDAO.getUtilisateurByEmail(email);
         if (utilisateur != null && utilisateur.getMotDePasse().equals(motDePasse)) {
@@ -23,9 +21,7 @@ public class ConnexionController {
         return null; // Connexion échouée
     }
 
-    /**
-     * Inscription d’un nouvel utilisateur (client ou membre uniquement ici).
-     */
+    //Inscription d’un nouvel utilisateur (client ou membre uniquement ici).
     public boolean inscrire(String nom, String email, String motDePasse, TypeUtilisateur type, int age) {
         if (utilisateurDAO.getUtilisateurByEmail(email) != null) {
             return false; // Email déjà pris

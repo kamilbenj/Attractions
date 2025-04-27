@@ -55,25 +55,7 @@ public class ReservationDAO {
         return -1;
     }
 
-    public Reservation getReservationById(int id) {
-        String sql = "SELECT * FROM Reservation WHERE id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return mapReservation(rs);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     public List<Reservation> getReservationsByUtilisateur(int idUtilisateur) {
         List<Reservation> list = new ArrayList<>();
@@ -115,39 +97,6 @@ public class ReservationDAO {
         return list;
     }
 
-    public boolean updateReservation(Reservation r) {
-        String sql = "UPDATE Reservation SET id_utilisateur = ?, id_attraction = ?, date_reservation = ?, heure_reservation = ?, nombre_billets = ?, statut = ? WHERE id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            if (r.getIdUtilisateur() == 0) {
-                ps.setNull(1, Types.INTEGER);
-            } else {
-                ps.setInt(1, r.getIdUtilisateur());
-            }
-
-            ps.setInt(2, r.getIdAttraction());
-            ps.setDate(3, Date.valueOf(r.getDateReservation()));
-
-            if (r.getHeureReservation() != null) {
-                ps.setTime(4, Time.valueOf(r.getHeureReservation()));
-            } else {
-                ps.setNull(4, Types.TIME);
-            }
-
-            ps.setInt(5, r.getNombreBillets());
-            ps.setString(6, r.getStatut().name());
-            ps.setInt(7, r.getId());
-
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
 
     public boolean deleteReservation(int id) {
         String deleteFactureSQL = "DELETE FROM Facture WHERE id_reservation = ?";

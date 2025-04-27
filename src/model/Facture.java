@@ -11,7 +11,6 @@ public class Facture {
     private boolean reductionAppliquee;
 
     // Constructeurs
-    public Facture() {}
 
     public Facture(int id, int idReservation, double montantTotal, LocalDate dateFacture, boolean reductionAppliquee) {
         this.id = id;
@@ -41,33 +40,22 @@ public class Facture {
         return idReservation;
     }
 
-    public void setIdReservation(int idReservation) {
-        this.idReservation = idReservation;
-    }
 
     public double getMontantTotal() {
         return montantTotal;
     }
 
-    public void setMontantTotal(double montantTotal) {
-        this.montantTotal = montantTotal;
-    }
+
 
     public LocalDate getDateFacture() {
         return dateFacture;
     }
 
-    public void setDateFacture(LocalDate dateFacture) {
-        this.dateFacture = dateFacture;
-    }
 
     public boolean isReductionAppliquee() {
         return reductionAppliquee;
     }
 
-    public void setReductionAppliquee(boolean reductionAppliquee) {
-        this.reductionAppliquee = reductionAppliquee;
-    }
 
     @Override
     public String toString() {

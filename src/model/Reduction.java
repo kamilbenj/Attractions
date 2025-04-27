@@ -13,7 +13,6 @@ public class Reduction {
     }
 
     // Constructeurs
-    public Reduction() {}
 
     public Reduction(int id, String nom, int pourcentage, CritereReduction critere) {
         this.id = id;
@@ -41,24 +40,14 @@ public class Reduction {
         return nom;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
 
     public int getPourcentage() {
         return pourcentage;
     }
 
-    public void setPourcentage(int pourcentage) {
-        this.pourcentage = pourcentage;
-    }
 
     public CritereReduction getCritere() {
         return critere;
-    }
-
-    public void setCritere(CritereReduction critere) {
-        this.critere = critere;
     }
 
     @Override

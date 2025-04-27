@@ -18,8 +18,7 @@ public class Utilisateur {
     }
 
     // Constructeurs
-    public Utilisateur() {
-    }
+
 
     public Utilisateur(int id, String nom, String email, String motDePasse, TypeUtilisateur type, int age, LocalDate dateInscription) {
         this.id = id;
@@ -53,49 +52,30 @@ public class Utilisateur {
         return nom;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
     public String getMotDePasse() {
         return motDePasse;
     }
 
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
-    }
 
     public TypeUtilisateur getType() {
         return type;
     }
 
-    public void setType(TypeUtilisateur type) {
-        this.type = type;
-    }
 
     public int getAge() {
         return age;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
 
     public LocalDate getDateInscription() {
         return dateInscription;
     }
 
-    public void setDateInscription(LocalDate dateInscription) {
-        this.dateInscription = dateInscription;
-    }
 
     @Override
     public String toString() {

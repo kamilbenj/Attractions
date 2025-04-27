@@ -43,40 +43,24 @@ public class Attraction {
         return nom;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public double getPrix() {
         return prix;
     }
 
-    public void setPrix(double prix) {
-        this.prix = prix;
-    }
 
     public int getCapacite() {
         return capacite;
     }
 
-    public void setCapacite(int capacite) {
-        this.capacite = capacite;
-    }
 
     public boolean isDisponible() {
         return disponible;
-    }
-
-    public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
     }
 
     @Override

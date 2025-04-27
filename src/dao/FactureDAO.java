@@ -29,25 +29,6 @@ public class FactureDAO {
         return false;
     }
 
-    public Facture getFactureById(int id) {
-        String sql = "SELECT * FROM Facture WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return mapFacture(rs);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     public List<Facture> getFacturesByReservation(int reservationId) {
         List<Facture> list = new ArrayList<>();
         String sql = "SELECT * FROM Facture WHERE id_reservation = ?";
@@ -69,42 +50,7 @@ public class FactureDAO {
         return list;
     }
 
-    public List<Facture> getAllFactures() {
-        List<Facture> list = new ArrayList<>();
-        String sql = "SELECT * FROM Facture";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                list.add(mapFacture(rs));
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return list;
-    }
-
-    public boolean deleteFacture(int id) {
-        String sql = "DELETE FROM Facture WHERE id = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    // Mapping ResultSet -> Objet Facture
     private Facture mapFacture(ResultSet rs) throws SQLException {
         return new Facture(
                 rs.getInt("id"),

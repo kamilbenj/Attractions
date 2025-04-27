@@ -19,7 +19,6 @@ public class Reservation {
 
     // === Constructeurs ===
 
-    public Reservation() {}
 
     public Reservation(int idUtilisateur, int idAttraction, LocalDate dateReservation, LocalTime heureReservation, int nombreBillets, StatutReservation statut) {
         this.idUtilisateur = idUtilisateur;
@@ -49,49 +48,34 @@ public class Reservation {
         return idUtilisateur;
     }
 
-    public void setIdUtilisateur(int idUtilisateur) {
-        this.idUtilisateur = idUtilisateur;
-    }
 
     public int getIdAttraction() {
         return idAttraction;
     }
 
-    public void setIdAttraction(int idAttraction) {
-        this.idAttraction = idAttraction;
-    }
+
 
     public LocalDate getDateReservation() {
         return dateReservation;
     }
 
-    public void setDateReservation(LocalDate dateReservation) {
-        this.dateReservation = dateReservation;
-    }
+
 
     public LocalTime getHeureReservation() {
         return heureReservation;
     }
 
-    public void setHeureReservation(LocalTime heureReservation) {
-        this.heureReservation = heureReservation;
-    }
+
 
     public int getNombreBillets() {
         return nombreBillets;
     }
 
-    public void setNombreBillets(int nombreBillets) {
-        this.nombreBillets = nombreBillets;
-    }
 
     public StatutReservation getStatut() {
         return statut;
     }
 
-    public void setStatut(StatutReservation statut) {
-        this.statut = statut;
-    }
 
     @Override
     public String toString() {

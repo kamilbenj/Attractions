@@ -104,7 +104,6 @@ public class AttractionDAO {
         return false;
     }
 
-    // Méthode de mapping
     private Attraction mapAttraction(ResultSet rs) throws SQLException {
         return new Attraction(
                 rs.getInt("id"),

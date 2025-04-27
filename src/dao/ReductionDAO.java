@@ -28,25 +28,7 @@ public class ReductionDAO {
         return false;
     }
 
-    public Reduction getReductionById(int id) {
-        String sql = "SELECT * FROM Reduction WHERE id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return mapReduction(rs);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     public List<Reduction> getAllReductions() {
         List<Reduction> list = new ArrayList<>();
@@ -83,7 +65,6 @@ public class ReductionDAO {
         return false;
     }
 
-    // Mapping
     private Reduction mapReduction(ResultSet rs) throws SQLException {
         return new Reduction(
                 rs.getInt("id"),
