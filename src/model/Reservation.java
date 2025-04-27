@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Reservation {
 
@@ -8,35 +9,34 @@ public class Reservation {
     private int idUtilisateur;
     private int idAttraction;
     private LocalDate dateReservation;
+    private LocalTime heureReservation; // Nouvel attribut
     private int nombreBillets;
     private StatutReservation statut;
 
-    // Enumération des statuts possibles
     public enum StatutReservation {
         CONFIRMEE, ANNULEE, EN_ATTENTE
     }
 
     // Constructeurs
+
     public Reservation() {}
 
-    public Reservation(int id, int idUtilisateur, int idAttraction, LocalDate dateReservation, int nombreBillets, StatutReservation statut) {
+    public Reservation(int idUtilisateur, int idAttraction, LocalDate dateReservation, LocalTime heureReservation, int nombreBillets, StatutReservation statut) {
+        this.idUtilisateur = idUtilisateur;
+        this.idAttraction = idAttraction;
+        this.dateReservation = dateReservation;
+        this.heureReservation = heureReservation;
+        this.nombreBillets = nombreBillets;
+        this.statut = statut;
+    }
+
+    public Reservation(int id, int idUtilisateur, int idAttraction, LocalDate dateReservation, LocalTime heureReservation, int nombreBillets, StatutReservation statut) {
+        this(idUtilisateur, idAttraction, dateReservation, heureReservation, nombreBillets, statut);
         this.id = id;
-        this.idUtilisateur = idUtilisateur;
-        this.idAttraction = idAttraction;
-        this.dateReservation = dateReservation;
-        this.nombreBillets = nombreBillets;
-        this.statut = statut;
     }
 
-    public Reservation(int idUtilisateur, int idAttraction, LocalDate dateReservation, int nombreBillets, StatutReservation statut) {
-        this.idUtilisateur = idUtilisateur;
-        this.idAttraction = idAttraction;
-        this.dateReservation = dateReservation;
-        this.nombreBillets = nombreBillets;
-        this.statut = statut;
-    }
+    // Getters et Setters
 
-    // Getters & Setters
     public int getId() {
         return id;
     }
@@ -69,6 +69,14 @@ public class Reservation {
         this.dateReservation = dateReservation;
     }
 
+    public LocalTime getHeureReservation() {
+        return heureReservation;
+    }
+
+    public void setHeureReservation(LocalTime heureReservation) {
+        this.heureReservation = heureReservation;
+    }
+
     public int getNombreBillets() {
         return nombreBillets;
     }
@@ -87,6 +95,6 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return "Réservation de " + nombreBillets + " billet(s) le " + dateReservation + " - Statut : " + statut;
+        return "Réservation #" + id + " : Attraction " + idAttraction + " à " + heureReservation + "h le " + dateReservation;
     }
 }

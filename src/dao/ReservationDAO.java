@@ -5,22 +5,36 @@ import model.Reservation.StatutReservation;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ReservationDAO {
 
     public int insertReservation(Reservation r) {
-        String sql = "INSERT INTO Reservation (id_utilisateur, id_attraction, date_reservation, nombre_billets, statut) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Reservation (id_utilisateur, id_attraction, date_reservation, heure_reservation, nombre_billets, statut) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setInt(1, r.getIdUtilisateur());
+            // Si idUtilisateur = 0 (invité), on met NULL en base
+            if (r.getIdUtilisateur() == 0) {
+                ps.setNull(1, Types.INTEGER);
+            } else {
+                ps.setInt(1, r.getIdUtilisateur());
+            }
+
             ps.setInt(2, r.getIdAttraction());
             ps.setDate(3, Date.valueOf(r.getDateReservation()));
-            ps.setInt(4, r.getNombreBillets());
-            ps.setString(5, r.getStatut().name());
+
+            if (r.getHeureReservation() != null) {
+                ps.setTime(4, Time.valueOf(r.getHeureReservation()));
+            } else {
+                ps.setNull(4, Types.TIME);
+            }
+
+            ps.setInt(5, r.getNombreBillets());
+            ps.setString(6, r.getStatut().name());
 
             int affectedRows = ps.executeUpdate();
 
@@ -30,7 +44,7 @@ public class ReservationDAO {
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1); // retourne l'ID de la réservation
+                    return generatedKeys.getInt(1);
                 }
             }
 
@@ -38,7 +52,7 @@ public class ReservationDAO {
             e.printStackTrace();
         }
 
-        return -1; // insertion échouée
+        return -1;
     }
 
     public Reservation getReservationById(int id) {
@@ -102,17 +116,29 @@ public class ReservationDAO {
     }
 
     public boolean updateReservation(Reservation r) {
-        String sql = "UPDATE Reservation SET id_utilisateur = ?, id_attraction = ?, date_reservation = ?, nombre_billets = ?, statut = ? WHERE id = ?";
+        String sql = "UPDATE Reservation SET id_utilisateur = ?, id_attraction = ?, date_reservation = ?, heure_reservation = ?, nombre_billets = ?, statut = ? WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, r.getIdUtilisateur());
+            if (r.getIdUtilisateur() == 0) {
+                ps.setNull(1, Types.INTEGER);
+            } else {
+                ps.setInt(1, r.getIdUtilisateur());
+            }
+
             ps.setInt(2, r.getIdAttraction());
             ps.setDate(3, Date.valueOf(r.getDateReservation()));
-            ps.setInt(4, r.getNombreBillets());
-            ps.setString(5, r.getStatut().name());
-            ps.setInt(6, r.getId());
+
+            if (r.getHeureReservation() != null) {
+                ps.setTime(4, Time.valueOf(r.getHeureReservation()));
+            } else {
+                ps.setNull(4, Types.TIME);
+            }
+
+            ps.setInt(5, r.getNombreBillets());
+            ps.setString(6, r.getStatut().name());
+            ps.setInt(7, r.getId());
 
             return ps.executeUpdate() > 0;
 
@@ -124,14 +150,28 @@ public class ReservationDAO {
     }
 
     public boolean deleteReservation(int id) {
-        String sql = "DELETE FROM Reservation WHERE id = ?";
+        String deleteFactureSQL = "DELETE FROM Facture WHERE id_reservation = ?";
+        String deleteReservationSQL = "DELETE FROM Reservation WHERE id = ?";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false); // début transaction
 
-            ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
+            try (PreparedStatement psFacture = conn.prepareStatement(deleteFactureSQL);
+                 PreparedStatement psReservation = conn.prepareStatement(deleteReservationSQL)) {
 
+                psFacture.setInt(1, id);
+                psFacture.executeUpdate(); // Supprime la facture liee
+
+                psReservation.setInt(1, id);
+                int affectedRows = psReservation.executeUpdate(); // Supprime la réservation
+
+                conn.commit(); // Valide la transaction
+                return affectedRows > 0;
+
+            } catch (SQLException e) {
+                conn.rollback(); // Rollback si probleme
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -140,11 +180,18 @@ public class ReservationDAO {
     }
 
     private Reservation mapReservation(ResultSet rs) throws SQLException {
+        LocalTime heureReservation = null;
+        Time sqlTime = rs.getTime("heure_reservation");
+        if (sqlTime != null) {
+            heureReservation = sqlTime.toLocalTime();
+        }
+
         return new Reservation(
                 rs.getInt("id"),
                 rs.getInt("id_utilisateur"),
                 rs.getInt("id_attraction"),
                 rs.getDate("date_reservation").toLocalDate(),
+                heureReservation,
                 rs.getInt("nombre_billets"),
                 StatutReservation.valueOf(
                         rs.getString("statut")

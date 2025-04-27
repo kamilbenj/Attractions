@@ -32,14 +32,45 @@ public class AllReservationsView extends JFrame {
 
     private void initUI() {
         setTitle("Toutes les réservations");
-        setSize(800, 400);
+        setSize(900, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        String[] columnNames = {"ID", "Client", "Attraction", "Date", "Billets", "Statut"};
+        String[] columnNames = {"ID", "Client", "Attraction", "Date", "Heure", "Billets", "Statut"};
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
         add(new JScrollPane(table), BorderLayout.CENTER);
+
+        JButton supprimerButton = new JButton("Supprimer réservation");
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(supprimerButton);
+
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        supprimerButton.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow >= 0) {
+                int reservationId = (int) tableModel.getValueAt(selectedRow, 0);
+
+                int confirm = JOptionPane.showConfirmDialog(this,
+                        "Êtes-vous sûr de vouloir supprimer cette réservation ?",
+                        "Confirmation",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    boolean deleted = reservationController.supprimerReservation(reservationId);
+
+                    if (deleted) {
+                        JOptionPane.showMessageDialog(this, "Réservation supprimée avec succès !");
+                        loadReservations();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Erreur lors de la suppression.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Veuillez sélectionner une réservation.", "Avertissement", JOptionPane.WARNING_MESSAGE);
+            }
+        });
 
         setVisible(true);
     }
@@ -48,7 +79,6 @@ public class AllReservationsView extends JFrame {
         tableModel.setRowCount(0);
         List<Reservation> reservations = reservationController.getToutesReservations();
 
-        // Caches pour éviter de requêter en boucle
         Map<Integer, String> utilisateurs = new HashMap<>();
         Map<Integer, String> attractions = new HashMap<>();
 
@@ -61,11 +91,15 @@ public class AllReservationsView extends JFrame {
         }
 
         for (Reservation r : reservations) {
+            String clientNom = utilisateurs.getOrDefault(r.getIdUtilisateur(), "Invité");
+            String attractionNom = attractions.getOrDefault(r.getIdAttraction(), "Inconnue");
+
             tableModel.addRow(new Object[]{
                     r.getId(),
-                    utilisateurs.getOrDefault(r.getIdUtilisateur(), "Inconnu"),
-                    attractions.getOrDefault(r.getIdAttraction(), "Inconnue"),
+                    clientNom,
+                    attractionNom,
                     r.getDateReservation(),
+                    (r.getHeureReservation() != null ? r.getHeureReservation() : "-"),
                     r.getNombreBillets(),
                     r.getStatut()
             });

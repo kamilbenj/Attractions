@@ -34,7 +34,7 @@ public class HistoriqueReservationsView extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        String[] columnNames = {"ID", "Attraction", "Date", "Billets", "Statut"};
+        String[] columnNames = {"ID", "Attraction", "Date", "Heure", "Billets", "Statut"};
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
 
@@ -55,6 +55,7 @@ public class HistoriqueReservationsView extends JFrame {
                     r.getId(),
                     attractionMap.getOrDefault(r.getIdAttraction(), "Inconnue"),
                     r.getDateReservation(),
+                    (r.getHeureReservation() != null ? r.getHeureReservation() : "-"),
                     r.getNombreBillets(),
                     r.getStatut()
             });
