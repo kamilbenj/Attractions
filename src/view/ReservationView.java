@@ -153,7 +153,7 @@ public class ReservationView extends JFrame {
         int heure = Integer.parseInt(heureSelection.substring(0, heureSelection.indexOf("h")));
         LocalTime heureFinale = LocalTime.of(heure, 0);
 
-        // Appel PaymentView pour valider avant la réservation
+        // 🎯 Appel PaymentView pour valider avant la réservation
         new PaymentView(() -> {
             boolean success = reservationController.reserverAttraction(idClient, attraction.getId(), date, heureFinale, nbBillets);
             if (success) {

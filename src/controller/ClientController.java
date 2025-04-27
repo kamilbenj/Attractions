@@ -3,10 +3,8 @@ package controller;
 import dao.FactureDAO;
 import dao.ReservationDAO;
 import dao.UtilisateurDAO;
-import dao.UtilisateurReductionDAO;
 import model.Facture;
 import model.Reservation;
-import model.UtilisateurReduction;
 
 import java.util.List;
 
@@ -14,13 +12,11 @@ public class ClientController {
 
     private final ReservationDAO reservationDAO;
     private final FactureDAO factureDAO;
-    private final UtilisateurReductionDAO utilisateurReductionDAO;
     private final UtilisateurDAO utilisateurDAO;
 
     public ClientController() {
         this.reservationDAO = new ReservationDAO();
         this.factureDAO = new FactureDAO();
-        this.utilisateurReductionDAO = new UtilisateurReductionDAO();
         this.utilisateurDAO = new UtilisateurDAO();
     }
 
@@ -43,13 +39,6 @@ public class ClientController {
         }
 
         return facturesClient;
-    }
-
-    /**
-     * Retourne les réductions assignées à un client.
-     */
-    public List<UtilisateurReduction> getReductionsClient(int idClient) {
-        return utilisateurReductionDAO.getReductionsByUtilisateur(idClient);
     }
 
     /**

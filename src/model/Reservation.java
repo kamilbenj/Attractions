@@ -9,7 +9,7 @@ public class Reservation {
     private int idUtilisateur;
     private int idAttraction;
     private LocalDate dateReservation;
-    private LocalTime heureReservation; // Nouvel attribut
+    private LocalTime heureReservation; // 🔥 Nouvel attribut
     private int nombreBillets;
     private StatutReservation statut;
 
@@ -17,7 +17,7 @@ public class Reservation {
         CONFIRMEE, ANNULEE, EN_ATTENTE
     }
 
-    // Constructeurs
+    // === Constructeurs ===
 
     public Reservation() {}
 
@@ -35,7 +35,7 @@ public class Reservation {
         this.id = id;
     }
 
-    // Getters et Setters
+    // === Getters & Setters ===
 
     public int getId() {
         return id;

@@ -60,7 +60,7 @@ public class ReservationController {
             double montantTotal = prixUnitaire * nbBillets;
             boolean reductionAppliquee = false;
 
-            // Nouvelle vérification ici
+            // ⚡ Nouvelle vérification ici
             if (utilisateur != null && utilisateur.getType() != Utilisateur.TypeUtilisateur.INVITE) {
                 int age = utilisateur.getAge();
                 List<Reduction> reductions = reductionDAO.getAllReductions();

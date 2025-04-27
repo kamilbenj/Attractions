@@ -39,7 +39,7 @@ public class FacturesView extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        String[] columnNames = {"ID Facture", "Attraction", "Date", "Montant", "Réduction"};
+        String[] columnNames = {"ID Facture", "Attraction", "Date", "Heure", "Montant", "Réduction"};
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
 
@@ -68,7 +68,8 @@ public class FacturesView extends JFrame {
             tableModel.addRow(new Object[]{
                     f.getId(),
                     attraction,
-                    f.getDateFacture(),
+                    (r != null ? r.getDateReservation() : "-"),
+                    (r != null && r.getHeureReservation() != null ? r.getHeureReservation() : "-"),
                     f.getMontantTotal() + " €",
                     f.isReductionAppliquee() ? "✅ Oui" : "❌ Non"
             });

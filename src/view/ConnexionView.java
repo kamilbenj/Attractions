@@ -16,6 +16,7 @@ public class ConnexionView extends JFrame {
     private JPasswordField passwordField;
     private JButton loginButton;
     private JButton inscriptionButton;
+    private JButton inviteButton;
     private JLabel messageLabel;
 
     public ConnexionView() {
@@ -25,17 +26,18 @@ public class ConnexionView extends JFrame {
 
     private void initUI() {
         setTitle("Connexion - Parc Attractions");
-        setSize(400, 300);
+        setSize(400, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Centrer la fenêtre
+        setLocationRelativeTo(null);
 
-        JPanel panel = new JPanel(new GridLayout(6, 1, 10, 10));
+        JPanel panel = new JPanel(new GridLayout(7, 1, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
 
         emailField = new JTextField();
         passwordField = new JPasswordField();
         loginButton = new JButton("Se connecter");
         inscriptionButton = new JButton("Créer un compte");
+        inviteButton = new JButton("Connexion Invité");
         messageLabel = new JLabel("", SwingConstants.CENTER);
 
         panel.add(new JLabel("Email :"));
@@ -44,14 +46,28 @@ public class ConnexionView extends JFrame {
         panel.add(passwordField);
         panel.add(loginButton);
         panel.add(inscriptionButton);
+        panel.add(inviteButton);
 
         add(panel, BorderLayout.CENTER);
         add(messageLabel, BorderLayout.SOUTH);
 
         loginButton.addActionListener(this::handleLogin);
         inscriptionButton.addActionListener(e -> {
-            new InscriptionView();  // Ouvre la fenêtre d'inscription
-            dispose();              // Ferme la fenêtre actuelle
+            new InscriptionView();
+            dispose();
+        });
+        inviteButton.addActionListener(e -> {
+            Utilisateur invite = new Utilisateur(
+                    0,
+                    "Invité",
+                    "invite@parc.com",
+                    "",
+                    TypeUtilisateur.INVITE,
+                    30,
+                    java.time.LocalDate.now()
+            );
+            new ClientDashboardView(invite);
+            dispose();
         });
 
         setVisible(true);
@@ -67,20 +83,14 @@ public class ConnexionView extends JFrame {
         }
 
         Utilisateur utilisateur = controller.connecter(email, password);
-        if (utilisateur != null) {
-            showMessage("Bienvenue " + utilisateur.getNom(), Color.GREEN);
 
-            // 🔀 Redirection selon type d'utilisateur
+        if (utilisateur != null) {
             if (utilisateur.getType() == TypeUtilisateur.ADMIN) {
-                JOptionPane.showMessageDialog(this, "Redirection vers l'espace admin...");
                 new AdminDashboardView(utilisateur);
             } else {
-                JOptionPane.showMessageDialog(this, "Redirection vers l'espace client...");
                 new ClientDashboardView(utilisateur);
             }
-
             dispose();
-
         } else {
             showMessage("Email ou mot de passe invalide.", Color.RED);
         }

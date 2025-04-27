@@ -2,7 +2,6 @@ package controller;
 
 import dao.AttractionDAO;
 import dao.ReductionDAO;
-import dao.UtilisateurReductionDAO;
 import model.Attraction;
 import model.Reduction;
 
@@ -12,12 +11,10 @@ public class AdminController {
 
     private final AttractionDAO attractionDAO;
     private final ReductionDAO reductionDAO;
-    private final UtilisateurReductionDAO utilisateurReductionDAO;
 
     public AdminController() {
         this.attractionDAO = new AttractionDAO();
         this.reductionDAO = new ReductionDAO();
-        this.utilisateurReductionDAO = new UtilisateurReductionDAO();
     }
 
     // ------------------ Gestion Attractions ------------------ //
@@ -43,10 +40,6 @@ public class AdminController {
     }
 
     // ------------------ Gestion Réductions ------------------ //
-
-    public boolean attribuerReductionUtilisateur(int idUtilisateur, int idReduction) {
-        return utilisateurReductionDAO.assignerReduction(idUtilisateur, idReduction);
-    }
 
     public List<Reduction> listerReductions() {
         return reductionDAO.getAllReductions();
