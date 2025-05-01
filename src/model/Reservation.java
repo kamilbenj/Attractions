@@ -9,7 +9,7 @@ public class Reservation {
     private int idUtilisateur;
     private int idAttraction;
     private LocalDate dateReservation;
-    private LocalTime heureReservation; // 🔥 Nouvel attribut
+    private LocalTime heureReservation; // Nouvel attribut
     private int nombreBillets;
     private StatutReservation statut;
 

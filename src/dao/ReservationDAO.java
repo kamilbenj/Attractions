@@ -17,7 +17,7 @@ public class ReservationDAO {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            // 🔥 Si idUtilisateur = 0 (invité), on met NULL en base
+            // Si idUtilisateur = 0 (invité), on met NULL en base
             if (r.getIdUtilisateur() == 0) {
                 ps.setNull(1, Types.INTEGER);
             } else {
@@ -103,22 +103,22 @@ public class ReservationDAO {
         String deleteReservationSQL = "DELETE FROM Reservation WHERE id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection()) {
-            conn.setAutoCommit(false); // ✅ début transaction
+            conn.setAutoCommit(false); // début transaction
 
             try (PreparedStatement psFacture = conn.prepareStatement(deleteFactureSQL);
                  PreparedStatement psReservation = conn.prepareStatement(deleteReservationSQL)) {
 
                 psFacture.setInt(1, id);
-                psFacture.executeUpdate(); // 🔥 Supprime la facture liée
+                psFacture.executeUpdate(); // Supprime la facture liée
 
                 psReservation.setInt(1, id);
-                int affectedRows = psReservation.executeUpdate(); // 🔥 Supprime la réservation
+                int affectedRows = psReservation.executeUpdate(); // Supprime la réservation
 
-                conn.commit(); // ✅ Valide la transaction
+                conn.commit(); // Valide la transaction
                 return affectedRows > 0;
 
             } catch (SQLException e) {
-                conn.rollback(); // ❌ Rollback si problème
+                conn.rollback(); // Rollback si problème
                 e.printStackTrace();
             }
         } catch (SQLException e) {
