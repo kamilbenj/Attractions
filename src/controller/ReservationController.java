@@ -15,6 +15,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+/**
+ * Contrôleur chargé de la gestion métier des réservations
+ * Permet de créer des réservations avec ou sans réduction, d'afficher l'historique d'un utilisateur,
+ * de lister toutes les réservations et de supprimer une réservation
+ *
+ * Fait le lien entre les vues (interfaces utilisateur) et les DAO de données
+ *
+ * @see dao.ReservationDAO
+ * @see model.Reservation
+ */
 public class ReservationController {
 
     private final ReservationDAO reservationDAO;
@@ -23,6 +33,9 @@ public class ReservationController {
     private final UtilisateurDAO utilisateurDAO;
     private final ReductionDAO reductionDAO;
 
+    /**
+     * Initialise les DAO utilisés par le contrôleur
+     */
     public ReservationController() {
         this.reservationDAO = new ReservationDAO();
         this.factureDAO = new FactureDAO();
@@ -31,6 +44,17 @@ public class ReservationController {
         this.reductionDAO = new ReductionDAO();
     }
 
+    /**
+     * Crée une réservation et une facture associée
+     * Si l'utilisateur est éligible, applique une réduction (enfant, senior, fidélité)
+     *
+     * @param idUtilisateur ID de l'utilisateur (0 pour un invité)
+     * @param idAttraction ID de l'attraction à réserver
+     * @param date Date de la réservation (doit être aujourd'hui ou plus tard)
+     * @param heure Heure prévue (peut être {@code null})
+     * @param nbBillets Nombre de billets réservés (> 0)
+     * @return {@code true} si la réservation et la facture ont été créées avec succès, sinon {@code false}
+     */
     //Crée une nouvelle réservation avec date et heure.
     public boolean reserverAttraction(int idUtilisateur, int idAttraction, LocalDate date, LocalTime heure, int nbBillets) {
         if (nbBillets <= 0 || date.isBefore(LocalDate.now())) {
@@ -92,16 +116,31 @@ public class ReservationController {
         return false;
     }
 
-    //Historique des réservations du client
-    public List<Reservation> getHistoriqueUtilisateur(int idUtilisateur) {
+    /**
+     * Retourne toutes les réservations passées par un utilisateur
+     *
+     * @param idUtilisateur L'identifiant de l'utilisateur
+     * @return Liste des réservations effectuées par cet utilisateur
+     */
+    public List<Reservation> getHistoriqueUtilisateur(int idUtilisateur) {//Historique des réservations du client
         return reservationDAO.getReservationsByUtilisateur(idUtilisateur);
     }
 
-    //Liste de toutes les réservations (admin)
-    public List<Reservation> getToutesReservations() {
+    /**
+     * Retourne toutes les réservations du système (accès administrateur)
+     *
+     * @return Liste de toutes les réservations enregistrées
+     */
+    public List<Reservation> getToutesReservations() { //Liste de toutes les réservations (admin)
         return reservationDAO.getAllReservations();
     }
 
+    /**
+     * Supprime une réservation (et sa facture associée) par son identifiant
+     *
+     * @param idReservation Identifiant de la réservation à supprimer
+     * @return {@code true} si la suppression a réussi, {@code false} sinon
+     */
     public boolean supprimerReservation(int idReservation) {
         return reservationDAO.deleteReservation(idReservation);
     }

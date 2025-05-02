@@ -16,8 +16,15 @@ import java.util.Properties;
 
 import org.jdatepicker.impl.*;
 
+/**
+ * Vue Swing permettant à un client de réserver une attraction
+ * Affiche une interface avec : sélection d'attraction, date, heure, nombre de billets,
+ * et confirmation via une fenêtre de paiement
+ *
+ * Cette classe interagit avec {@link ReservationController}, {@link ReservationDAO} et {@link AttractionDAO}.
+ */
 public class ReservationView extends JFrame {
-
+    //On instancie le contrôleur et les DAO nécessaires pour accéder aux données
     private final ReservationController reservationController;
     private final ReservationDAO reservationDAO;
     private final AttractionDAO attractionDAO;
@@ -30,14 +37,22 @@ public class ReservationView extends JFrame {
     private JButton reserverButton;
     private JLabel messageLabel;
 
+    /**
+     * Crée la fenêtre de réservation pour un client donné
+     *
+     * @param idClient L'identifiant du client connecté
+     */
     public ReservationView(int idClient) {
         this.idClient = idClient;
         this.reservationController = new ReservationController();
         this.reservationDAO = new ReservationDAO();
         this.attractionDAO = new AttractionDAO();
         initUI();
-    }
+    } //Le constructeur prend l’id du client connecté en paramètre et initialise l’interface
 
+    /**
+     * Initialise les composants de l'interface utilisateur
+     */
     private void initUI() {
         setTitle("Réserver une attraction");
         setSize(500, 400);
@@ -56,12 +71,14 @@ public class ReservationView extends JFrame {
         p.put("text.month", "Mois");
         p.put("text.year", "Année");
         JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-        datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter()); //création sélecteur de date
 
         heureBox = new JComboBox<>();
         updateHeureBox();
+        //Liste déroulante d’heures disponibles pour une attraction, qui dépend de la date et de l’attraction choisies
 
         nbBilletsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
+        //permet de choisir entre 1 et 10 billets
 
         reserverButton = new JButton("Réserver");
         messageLabel = new JLabel("", SwingConstants.CENTER);
@@ -82,11 +99,15 @@ public class ReservationView extends JFrame {
 
         attractionBox.addActionListener(e -> updateHeureBox());
         datePicker.addActionListener(e -> updateHeureBox());
-        reserverButton.addActionListener(e -> handleReservation());
+        reserverButton.addActionListener(e -> handleReservation()); //pour lorsqu'on clique sur "Réserver"
 
         setVisible(true);
     }
 
+    /**
+     * Remplit la liste déroulante avec les attractions disponibles
+     * Remplit la combo box avec les attractions disponibles uniquement
+     */
     private void initAttractionBox() {
         List<Attraction> attractions = attractionDAO.getAllAttractions();
         for (Attraction a : attractions) {
@@ -96,6 +117,11 @@ public class ReservationView extends JFrame {
         }
     }
 
+    /**
+     * Met à jour la liste des heures disponibles en fonction de l'attraction et de la date choisies
+     * Filtre les heures entre 10h00 et 18h00.
+     * Marque les horaires déjà réservés comme indisponibles.
+     */
     private void updateHeureBox() {
         heureBox.removeAllItems();
         Attraction selectedAttraction = (Attraction) attractionBox.getSelectedItem();
@@ -126,6 +152,11 @@ public class ReservationView extends JFrame {
         heureBox.setModel(model);
     }
 
+    /**
+     * Récupère la date sélectionnée dans le sélecteur
+     * Extrait une date valide du datePicker.
+     * @return La date choisie ou {@code null} si aucune date sélectionnée
+     */
     private LocalDate getSelectedDate() {
         if (datePicker.getModel().getValue() != null) {
             java.util.Date selected = (java.util.Date) datePicker.getModel().getValue();
@@ -134,6 +165,12 @@ public class ReservationView extends JFrame {
         return null;
     }
 
+    /**
+     * Gère la logique de réservation après clic sur le bouton
+     * Vérifie les champs, l'heure, puis lance la fenêtre de paiement
+     * Puis appelle le contrôleur pour valider la réservation
+     * Affiche un résumé de réservation ou un message d’erreur
+     */
     private void handleReservation() {
         Attraction attraction = (Attraction) attractionBox.getSelectedItem();
         LocalDate date = getSelectedDate();
@@ -146,14 +183,14 @@ public class ReservationView extends JFrame {
         }
 
         if (heureSelection.contains("indisponible")) {
-            showMessage("❌ Sélectionnez une heure disponible.", Color.RED);
+            showMessage(" Sélectionnez une heure disponible.", Color.RED);
             return;
         }
 
         int heure = Integer.parseInt(heureSelection.substring(0, heureSelection.indexOf("h")));
         LocalTime heureFinale = LocalTime.of(heure, 0);
 
-        // 🎯 Appel PaymentView pour valider avant la réservation
+        // Appel PaymentView pour valider avant la réservation
         new PaymentView(() -> {
             boolean success = reservationController.reserverAttraction(idClient, attraction.getId(), date, heureFinale, nbBillets);
             if (success) {
@@ -163,11 +200,17 @@ public class ReservationView extends JFrame {
                 JOptionPane.showMessageDialog(this, resume, "Résumé de réservation", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
             } else {
-                showMessage("❌ Erreur lors de la réservation.", Color.RED);
+                showMessage(" Erreur lors de la réservation.", Color.RED);
             }
         });
     }
 
+    /**
+     * Affiche un message utilisateur en bas de la fenêtre
+     *
+     * @param message Le message à afficher
+     * @param color La couleur du texte
+     */
     private void showMessage(String message, Color color) {
         messageLabel.setText(message);
         messageLabel.setForeground(color);
